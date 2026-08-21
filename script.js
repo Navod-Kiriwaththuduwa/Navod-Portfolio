@@ -1,3 +1,8 @@
+const heroStylesheet = document.createElement('link');
+heroStylesheet.rel = 'stylesheet';
+heroStylesheet.href = 'hero-v2.css?v=2';
+document.head.appendChild(heroStylesheet);
+
 const header = document.querySelector('.site-header');
 const navToggle = document.querySelector('.nav-toggle');
 const navMenu = document.querySelector('.nav-menu');
