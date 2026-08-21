@@ -1,0 +1,93 @@
+/* Cropped-photo presentation extracted from composite banner sources */
+.moment-card .moment-photo {
+  position: absolute;
+  inset: 0;
+  display: block;
+  background-repeat: no-repeat;
+  background-color: #111;
+  transition: transform .65s cubic-bezier(.2,.7,.2,1), filter .35s ease;
+  will-change: transform;
+}
+
+.moment-card:hover .moment-photo,
+.moment-card:focus-visible .moment-photo {
+  transform: scale(1.055);
+  filter: saturate(1.06) contrast(1.02);
+}
+
+.moment-card > img { display: none !important; }
+
+.moment-card[data-crop="graduation"] .moment-photo {
+  background-image: url('https://raw.githubusercontent.com/Navod-Kiriwaththuduwa/NavodK/main/banner1.jpg');
+  background-size: 230% auto;
+  background-position: 0% 50%;
+}
+
+.moment-card[data-crop="speaking"] .moment-photo {
+  background-image: url('https://raw.githubusercontent.com/Navod-Kiriwaththuduwa/NavodK/main/banner1.jpg');
+  background-size: 230% auto;
+  background-position: 100% 50%;
+}
+
+.moment-card[data-crop="recognition"] .moment-photo {
+  background-image: url('https://raw.githubusercontent.com/Navod-Kiriwaththuduwa/NavodK/main/banner3.jpg');
+  background-size: 178% auto;
+  background-position: 72% 50%;
+}
+
+.moment-overlay .moment-type {
+  display: block;
+  margin-bottom: 4px;
+  color: rgba(255,255,255,.7);
+  font-size: .68rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.moment-overlay .moment-title {
+  display: block;
+  color: #fff;
+  font-size: 1rem;
+  line-height: 1.25;
+}
+
+.lightbox-media {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.lightbox-media > img { display: none !important; }
+
+.lightbox-crop {
+  width: min(100%, 850px);
+  height: min(72vh, 650px);
+  min-height: 420px;
+  border-radius: 22px;
+  background-repeat: no-repeat;
+  background-color: #111;
+  box-shadow: 0 28px 70px rgba(0,0,0,.42);
+}
+
+.lightbox-caption strong {
+  display: block;
+  color: #fff;
+  font-size: .95rem;
+  margin-bottom: 3px;
+}
+
+.lightbox-caption span {
+  color: rgba(255,255,255,.68);
+}
+
+@media (max-width: 720px) {
+  .lightbox-crop {
+    height: 62vh;
+    min-height: 340px;
+  }
+
+  .moment-card[data-crop="graduation"] .moment-photo,
+  .moment-card[data-crop="speaking"] .moment-photo {
+    background-size: 250% auto;
+  }
+}
