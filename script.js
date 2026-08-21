@@ -1,19 +1,226 @@
 const heroStylesheet = document.createElement('link');
 heroStylesheet.rel = 'stylesheet';
-heroStylesheet.href = 'hero-v2.css?v=2';
+heroStylesheet.href = 'hero-v2.css?v=3';
 document.head.appendChild(heroStylesheet);
 
 const header = document.querySelector('.site-header');
 const navToggle = document.querySelector('.nav-toggle');
 const navMenu = document.querySelector('.nav-menu');
 const themeToggle = document.querySelector('.theme-toggle');
-const filterButtons = document.querySelectorAll('.filter-btn');
-const projectCards = document.querySelectorAll('.project-card');
 const navLinks = document.querySelectorAll('.nav-menu a');
-const sections = [...document.querySelectorAll('main section[id]')];
+
+const icons = {
+  engineering: `
+    <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <g class="motion-part">
+        <circle cx="24" cy="24" r="7"></circle>
+        <path d="M24 6v5M24 37v5M6 24h5M37 24h5M11.3 11.3l3.6 3.6M33.1 33.1l3.6 3.6M36.7 11.3l-3.6 3.6M14.9 33.1l-3.6 3.6"></path>
+      </g>
+      <path d="M18.5 24h11M24 18.5v11"></path>
+    </svg>`,
+  leadership: `
+    <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <g class="motion-part">
+        <circle cx="24" cy="15" r="6"></circle>
+        <path d="M13 39c.8-8 4.6-12 11-12s10.2 4 11 12"></path>
+      </g>
+      <circle cx="10" cy="21" r="4"></circle><path d="M3 38c.6-5 2.9-8 7-8 2.1 0 3.8.8 5 2.2"></path>
+      <circle cx="38" cy="21" r="4"></circle><path d="M45 38c-.6-5-2.9-8-7-8-2.1 0-3.8.8-5 2.2"></path>
+    </svg>`,
+  impact: `
+    <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <g class="motion-part"><circle cx="24" cy="24" r="6"></circle></g>
+      <circle cx="24" cy="24" r="13"></circle><circle cx="24" cy="24" r="20"></circle>
+    </svg>`,
+  manufacturing: `
+    <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M4 25V13l7 4v-6l7 4V8l10 6v11H4Z"></path><path d="M9 25v-4h4v4M19 25v-5h4v5"></path>
+    </svg>`,
+  energy: `
+    <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M18 2 7 18h9l-2 12 11-17h-9l2-11Z"></path>
+    </svg>`,
+  research: `
+    <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M12 3h8M14 3v8L7 24a4 4 0 0 0 3.6 5h10.8A4 4 0 0 0 25 24l-7-13V3"></path><path d="M10 22h12"></path>
+    </svg>`
+};
+
+const pillarData = [
+  {
+    key: 'engineering',
+    detail: 'Where it shows up: NPI, production operations, FactoryLogix MES, PFMEA, engineering changes, RCA and continuous improvement.'
+  },
+  {
+    key: 'leadership',
+    detail: 'Where it shows up: production teams, cross-functional coordination, strategic execution, youth leadership and large-scale volunteer networks.'
+  },
+  {
+    key: 'impact',
+    detail: 'Where it shows up: scrap reduction, quality improvement, stronger systems, community service and developing people who can lead.'
+  }
+];
+
+const pillarCards = [...document.querySelectorAll('.pillar-card')];
+pillarCards.forEach((card, index) => {
+  const data = pillarData[index];
+  if (!data) return;
+  card.dataset.pillar = data.key;
+  card.setAttribute('role', 'button');
+  card.setAttribute('tabindex', '0');
+  card.setAttribute('aria-expanded', 'false');
+  card.setAttribute('aria-label', `${card.querySelector('h3')?.textContent || 'Professional pillar'} — click to explore`);
+
+  const number = card.querySelector('.pillar-no');
+  const icon = document.createElement('div');
+  icon.className = 'pillar-icon';
+  icon.innerHTML = icons[data.key];
+  number?.after(icon);
+
+  const more = document.createElement('div');
+  more.className = 'pillar-more';
+  more.innerHTML = `<div><p>${data.detail}</p></div>`;
+  card.appendChild(more);
+
+  const hint = document.createElement('div');
+  hint.className = 'pillar-hint';
+  hint.textContent = 'Click to explore +';
+  card.appendChild(hint);
+
+  const toggleCard = () => {
+    const willOpen = !card.classList.contains('is-active');
+    pillarCards.forEach(other => {
+      other.classList.remove('is-active');
+      other.setAttribute('aria-expanded', 'false');
+      const otherHint = other.querySelector('.pillar-hint');
+      if (otherHint) otherHint.textContent = 'Click to explore +';
+    });
+    if (willOpen) {
+      card.classList.add('is-active');
+      card.setAttribute('aria-expanded', 'true');
+      hint.textContent = 'Close −';
+    }
+  };
+
+  card.addEventListener('click', toggleCard);
+  card.addEventListener('keydown', event => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      toggleCard();
+    }
+  });
+});
+
+const projectCards = [...document.querySelectorAll('.project-card')];
+projectCards.forEach(card => {
+  const category = card.dataset.category;
+  if (!icons[category]) return;
+  const icon = document.createElement('div');
+  icon.className = 'project-category-icon';
+  icon.innerHTML = icons[category];
+  const title = card.querySelector('h3');
+  title?.before(icon);
+});
+
+const aboutSection = document.getElementById('about');
+if (aboutSection) {
+  const moments = document.createElement('section');
+  moments.className = 'section-pad moments-section';
+  moments.id = 'moments';
+  moments.innerHTML = `
+    <div class="container">
+      <div class="moments-heading reveal">
+        <div class="section-heading">
+          <p class="eyebrow">Beyond the résumé</p>
+          <h2>Real moments from the journey.</h2>
+          <p>A portfolio should show more than titles and dates. These are selected photographs from my professional, leadership and service journey.</p>
+        </div>
+        <p class="moments-note">Select any photograph to open it. Use the arrows or keyboard to move through the collection.</p>
+      </div>
+      <div class="moments-grid">
+        <button class="moment-card reveal" type="button" data-photo-index="0">
+          <img src="https://raw.githubusercontent.com/Navod-Kiriwaththuduwa/NavodK/main/banner1.jpg" alt="Selected moment from Navod Kiriwaththuduwa's journey" loading="lazy">
+          <span class="moment-overlay"><span><span>Selected moment</span><strong>Journey · 01</strong></span><span class="moment-open">↗</span></span>
+        </button>
+        <button class="moment-card reveal" type="button" data-photo-index="1" data-delay="70">
+          <img src="https://raw.githubusercontent.com/Navod-Kiriwaththuduwa/NavodK/main/banner2.jpg" alt="Selected moment from Navod Kiriwaththuduwa's journey" loading="lazy">
+          <span class="moment-overlay"><span><span>Selected moment</span><strong>Journey · 02</strong></span><span class="moment-open">↗</span></span>
+        </button>
+        <button class="moment-card reveal" type="button" data-photo-index="2" data-delay="140">
+          <img src="https://raw.githubusercontent.com/Navod-Kiriwaththuduwa/NavodK/main/banner3.jpg" alt="Selected moment from Navod Kiriwaththuduwa's journey" loading="lazy">
+          <span class="moment-overlay"><span><span>Selected moment</span><strong>Journey · 03</strong></span><span class="moment-open">↗</span></span>
+        </button>
+      </div>
+    </div>`;
+  aboutSection.after(moments);
+}
+
+const photoSources = [
+  'https://raw.githubusercontent.com/Navod-Kiriwaththuduwa/NavodK/main/banner1.jpg',
+  'https://raw.githubusercontent.com/Navod-Kiriwaththuduwa/NavodK/main/banner2.jpg',
+  'https://raw.githubusercontent.com/Navod-Kiriwaththuduwa/NavodK/main/banner3.jpg'
+];
+
+const lightbox = document.createElement('div');
+lightbox.className = 'photo-lightbox';
+lightbox.setAttribute('role', 'dialog');
+lightbox.setAttribute('aria-modal', 'true');
+lightbox.setAttribute('aria-label', 'Photo viewer');
+lightbox.innerHTML = `
+  <button class="lightbox-close" type="button" aria-label="Close photo viewer">×</button>
+  <div class="lightbox-shell">
+    <button class="lightbox-btn lightbox-prev" type="button" aria-label="Previous photograph">←</button>
+    <div class="lightbox-media">
+      <img alt="Selected portfolio photograph">
+      <div class="lightbox-caption" aria-live="polite"></div>
+    </div>
+    <button class="lightbox-btn lightbox-next" type="button" aria-label="Next photograph">→</button>
+  </div>`;
+document.body.appendChild(lightbox);
+
+const lightboxImage = lightbox.querySelector('img');
+const lightboxCaption = lightbox.querySelector('.lightbox-caption');
+let activePhoto = 0;
+let lastPhotoTrigger = null;
+
+function showPhoto(index) {
+  activePhoto = (index + photoSources.length) % photoSources.length;
+  lightboxImage.src = photoSources[activePhoto];
+  lightboxCaption.textContent = `Selected moment ${activePhoto + 1} of ${photoSources.length}`;
+}
+
+function openLightbox(index, trigger) {
+  lastPhotoTrigger = trigger;
+  showPhoto(index);
+  lightbox.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  lightbox.querySelector('.lightbox-close').focus();
+}
+
+function closeLightbox() {
+  lightbox.classList.remove('open');
+  document.body.style.overflow = '';
+  lastPhotoTrigger?.focus();
+}
+
+document.querySelectorAll('.moment-card').forEach(card => {
+  card.addEventListener('click', () => openLightbox(Number(card.dataset.photoIndex), card));
+});
+lightbox.querySelector('.lightbox-close').addEventListener('click', closeLightbox);
+lightbox.querySelector('.lightbox-prev').addEventListener('click', () => showPhoto(activePhoto - 1));
+lightbox.querySelector('.lightbox-next').addEventListener('click', () => showPhoto(activePhoto + 1));
+lightbox.addEventListener('click', event => {
+  if (event.target === lightbox) closeLightbox();
+});
+document.addEventListener('keydown', event => {
+  if (!lightbox.classList.contains('open')) return;
+  if (event.key === 'Escape') closeLightbox();
+  if (event.key === 'ArrowLeft') showPhoto(activePhoto - 1);
+  if (event.key === 'ArrowRight') showPhoto(activePhoto + 1);
+});
 
 function setHeaderState() {
-  header.classList.toggle('scrolled', window.scrollY > 18);
+  header?.classList.toggle('scrolled', window.scrollY > 18);
 }
 setHeaderState();
 window.addEventListener('scroll', setHeaderState, { passive: true });
@@ -42,12 +249,12 @@ themeToggle?.addEventListener('click', () => {
   localStorage.setItem('portfolio-theme', document.body.classList.contains('dark') ? 'dark' : 'light');
 });
 
+const filterButtons = document.querySelectorAll('.filter-btn');
 filterButtons.forEach(button => {
   button.addEventListener('click', () => {
     const filter = button.dataset.filter;
     filterButtons.forEach(btn => btn.classList.remove('active'));
     button.classList.add('active');
-
     projectCards.forEach(card => {
       const show = filter === 'all' || card.dataset.category === filter;
       card.classList.toggle('hidden', !show);
@@ -68,6 +275,7 @@ const revealObserver = new IntersectionObserver(entries => {
 
 document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
+const sections = [...document.querySelectorAll('main section[id]')].filter(section => section.id !== 'moments');
 const sectionObserver = new IntersectionObserver(entries => {
   entries.forEach(entry => {
     if (!entry.isIntersecting) return;
@@ -76,7 +284,7 @@ const sectionObserver = new IntersectionObserver(entries => {
     });
   });
 }, { rootMargin: '-35% 0px -55% 0px', threshold: 0 });
-
 sections.forEach(section => sectionObserver.observe(section));
 
-document.getElementById('year').textContent = new Date().getFullYear();
+const year = document.getElementById('year');
+if (year) year.textContent = new Date().getFullYear();
