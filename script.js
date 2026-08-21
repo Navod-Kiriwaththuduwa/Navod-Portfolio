@@ -3,6 +3,11 @@ heroStylesheet.rel = 'stylesheet';
 heroStylesheet.href = 'hero-v2.css?v=3';
 document.head.appendChild(heroStylesheet);
 
+const momentsStylesheet = document.createElement('link');
+momentsStylesheet.rel = 'stylesheet';
+momentsStylesheet.href = 'moments-v2.css?v=1';
+document.head.appendChild(momentsStylesheet);
+
 const header = document.querySelector('.site-header');
 const navToggle = document.querySelector('.nav-toggle');
 const navMenu = document.querySelector('.nav-menu');
@@ -122,6 +127,33 @@ projectCards.forEach(card => {
   title?.before(icon);
 });
 
+const momentData = [
+  {
+    crop: 'graduation',
+    type: 'Academic milestone',
+    title: 'Graduation & Engineering Foundation',
+    source: 'https://raw.githubusercontent.com/Navod-Kiriwaththuduwa/NavodK/main/banner1.jpg',
+    backgroundSize: '230% auto',
+    backgroundPosition: '0% 50%'
+  },
+  {
+    crop: 'speaking',
+    type: 'Leadership in action',
+    title: 'Speaking & Public Leadership',
+    source: 'https://raw.githubusercontent.com/Navod-Kiriwaththuduwa/NavodK/main/banner1.jpg',
+    backgroundSize: '230% auto',
+    backgroundPosition: '100% 50%'
+  },
+  {
+    crop: 'recognition',
+    type: 'Recognition',
+    title: 'A Milestone Worth Remembering',
+    source: 'https://raw.githubusercontent.com/Navod-Kiriwaththuduwa/NavodK/main/banner3.jpg',
+    backgroundSize: '178% auto',
+    backgroundPosition: '72% 50%'
+  }
+];
+
 const aboutSection = document.getElementById('about');
 if (aboutSection) {
   const moments = document.createElement('section');
@@ -133,33 +165,26 @@ if (aboutSection) {
         <div class="section-heading">
           <p class="eyebrow">Beyond the résumé</p>
           <h2>Real moments from the journey.</h2>
-          <p>A portfolio should show more than titles and dates. These are selected photographs from my professional, leadership and service journey.</p>
+          <p>These are focused photo moments extracted from the original banner artwork, so the people and experiences—not the banner design—remain the focus.</p>
         </div>
-        <p class="moments-note">Select any photograph to open it. Use the arrows or keyboard to move through the collection.</p>
+        <p class="moments-note">Each card isolates a specific moment from the source artwork. Select one to explore the cropped view.</p>
       </div>
       <div class="moments-grid">
-        <button class="moment-card reveal" type="button" data-photo-index="0">
-          <img src="https://raw.githubusercontent.com/Navod-Kiriwaththuduwa/NavodK/main/banner1.jpg" alt="Selected moment from Navod Kiriwaththuduwa's journey" loading="lazy">
-          <span class="moment-overlay"><span><span>Selected moment</span><strong>Journey · 01</strong></span><span class="moment-open">↗</span></span>
-        </button>
-        <button class="moment-card reveal" type="button" data-photo-index="1" data-delay="70">
-          <img src="https://raw.githubusercontent.com/Navod-Kiriwaththuduwa/NavodK/main/banner2.jpg" alt="Selected moment from Navod Kiriwaththuduwa's journey" loading="lazy">
-          <span class="moment-overlay"><span><span>Selected moment</span><strong>Journey · 02</strong></span><span class="moment-open">↗</span></span>
-        </button>
-        <button class="moment-card reveal" type="button" data-photo-index="2" data-delay="140">
-          <img src="https://raw.githubusercontent.com/Navod-Kiriwaththuduwa/NavodK/main/banner3.jpg" alt="Selected moment from Navod Kiriwaththuduwa's journey" loading="lazy">
-          <span class="moment-overlay"><span><span>Selected moment</span><strong>Journey · 03</strong></span><span class="moment-open">↗</span></span>
-        </button>
+        ${momentData.map((moment, index) => `
+          <button class="moment-card reveal" type="button" data-photo-index="${index}" data-crop="${moment.crop}" ${index ? `data-delay="${index * 70}"` : ''}>
+            <span class="moment-photo" aria-hidden="true"></span>
+            <span class="moment-overlay">
+              <span>
+                <span class="moment-type">${moment.type}</span>
+                <strong class="moment-title">${moment.title}</strong>
+              </span>
+              <span class="moment-open">↗</span>
+            </span>
+          </button>`).join('')}
       </div>
     </div>`;
   aboutSection.after(moments);
 }
-
-const photoSources = [
-  'https://raw.githubusercontent.com/Navod-Kiriwaththuduwa/NavodK/main/banner1.jpg',
-  'https://raw.githubusercontent.com/Navod-Kiriwaththuduwa/NavodK/main/banner2.jpg',
-  'https://raw.githubusercontent.com/Navod-Kiriwaththuduwa/NavodK/main/banner3.jpg'
-];
 
 const lightbox = document.createElement('div');
 lightbox.className = 'photo-lightbox';
@@ -171,22 +196,26 @@ lightbox.innerHTML = `
   <div class="lightbox-shell">
     <button class="lightbox-btn lightbox-prev" type="button" aria-label="Previous photograph">←</button>
     <div class="lightbox-media">
-      <img alt="Selected portfolio photograph">
+      <div class="lightbox-crop" role="img"></div>
       <div class="lightbox-caption" aria-live="polite"></div>
     </div>
     <button class="lightbox-btn lightbox-next" type="button" aria-label="Next photograph">→</button>
   </div>`;
 document.body.appendChild(lightbox);
 
-const lightboxImage = lightbox.querySelector('img');
+const lightboxCrop = lightbox.querySelector('.lightbox-crop');
 const lightboxCaption = lightbox.querySelector('.lightbox-caption');
 let activePhoto = 0;
 let lastPhotoTrigger = null;
 
 function showPhoto(index) {
-  activePhoto = (index + photoSources.length) % photoSources.length;
-  lightboxImage.src = photoSources[activePhoto];
-  lightboxCaption.textContent = `Selected moment ${activePhoto + 1} of ${photoSources.length}`;
+  activePhoto = (index + momentData.length) % momentData.length;
+  const moment = momentData[activePhoto];
+  lightboxCrop.style.backgroundImage = `url('${moment.source}')`;
+  lightboxCrop.style.backgroundSize = moment.backgroundSize;
+  lightboxCrop.style.backgroundPosition = moment.backgroundPosition;
+  lightboxCrop.setAttribute('aria-label', moment.title);
+  lightboxCaption.innerHTML = `<strong>${moment.title}</strong><span>${moment.type} · ${activePhoto + 1} of ${momentData.length}</span>`;
 }
 
 function openLightbox(index, trigger) {
