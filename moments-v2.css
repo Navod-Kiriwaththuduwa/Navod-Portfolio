@@ -1,4 +1,4 @@
-/* Cropped-photo presentation extracted from composite banner sources */
+/* Focused photo windows extracted from composite banner sources */
 .moment-card .moment-photo {
   position: absolute;
   inset: 0;
@@ -11,28 +11,31 @@
 
 .moment-card:hover .moment-photo,
 .moment-card:focus-visible .moment-photo {
-  transform: scale(1.055);
+  transform: scale(1.045);
   filter: saturate(1.06) contrast(1.02);
 }
 
 .moment-card > img { display: none !important; }
 
+/* Banner 1 — isolate the graduation portrait at the far-left side. */
 .moment-card[data-crop="graduation"] .moment-photo {
   background-image: url('https://raw.githubusercontent.com/Navod-Kiriwaththuduwa/NavodK/main/banner1.jpg');
-  background-size: 230% auto;
-  background-position: 0% 50%;
+  background-size: auto 190%;
+  background-position: 0% 48%;
 }
 
+/* Banner 1 — zoom into the leadership / speaking image rather than the full strip. */
 .moment-card[data-crop="speaking"] .moment-photo {
   background-image: url('https://raw.githubusercontent.com/Navod-Kiriwaththuduwa/NavodK/main/banner1.jpg');
-  background-size: 230% auto;
-  background-position: 100% 50%;
+  background-size: auto 205%;
+  background-position: 68% 49%;
 }
 
+/* Banner 3 — isolate the individual recognition/award moment. */
 .moment-card[data-crop="recognition"] .moment-photo {
   background-image: url('https://raw.githubusercontent.com/Navod-Kiriwaththuduwa/NavodK/main/banner3.jpg');
-  background-size: 178% auto;
-  background-position: 72% 50%;
+  background-size: auto 220%;
+  background-position: 46% 48%;
 }
 
 .moment-overlay .moment-type {
@@ -69,6 +72,25 @@
   box-shadow: 0 28px 70px rgba(0,0,0,.42);
 }
 
+/* Apply the same extraction logic in the enlarged viewer. */
+.lightbox-crop[data-crop="graduation"] {
+  background-image: url('https://raw.githubusercontent.com/Navod-Kiriwaththuduwa/NavodK/main/banner1.jpg');
+  background-size: auto 190%;
+  background-position: 0% 48%;
+}
+
+.lightbox-crop[data-crop="speaking"] {
+  background-image: url('https://raw.githubusercontent.com/Navod-Kiriwaththuduwa/NavodK/main/banner1.jpg');
+  background-size: auto 205%;
+  background-position: 68% 49%;
+}
+
+.lightbox-crop[data-crop="recognition"] {
+  background-image: url('https://raw.githubusercontent.com/Navod-Kiriwaththuduwa/NavodK/main/banner3.jpg');
+  background-size: auto 220%;
+  background-position: 46% 48%;
+}
+
 .lightbox-caption strong {
   display: block;
   color: #fff;
@@ -86,8 +108,15 @@
     min-height: 340px;
   }
 
-  .moment-card[data-crop="graduation"] .moment-photo,
+  .moment-card[data-crop="graduation"] .moment-photo {
+    background-size: auto 205%;
+  }
+
   .moment-card[data-crop="speaking"] .moment-photo {
-    background-size: 250% auto;
+    background-size: auto 225%;
+  }
+
+  .moment-card[data-crop="recognition"] .moment-photo {
+    background-size: auto 235%;
   }
 }
